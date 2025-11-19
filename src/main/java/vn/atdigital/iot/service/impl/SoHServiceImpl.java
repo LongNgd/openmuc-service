@@ -74,7 +74,7 @@ public class SoHServiceImpl implements SoHService {
                     .soh(schedule.getSoh())
                     .state(schedule.getState())
                     .startTime(schedule.getStartDatetime())
-                    .endTime(schedule.getFinishDatetime())
+                    .endTime(schedule.getEndDatetime())
                     .build();
             result.add(scheduleDTO);
         }

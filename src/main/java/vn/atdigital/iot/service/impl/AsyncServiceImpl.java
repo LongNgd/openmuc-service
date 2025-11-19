@@ -78,14 +78,14 @@ public class AsyncServiceImpl implements AsyncService {
 
     private CompletableFuture<String> stopThreadSuccess(SoHSchedule soHSchedule){
         soHSchedule.setState(DischargeState.SUCCESS);
-        soHSchedule.setFinishDatetime(LocalDateTime.now());
+        soHSchedule.setEndDatetime(LocalDateTime.now());
         soHScheduleRepository.save(soHSchedule);
         return CompletableFuture.completedFuture("Task completed successfully");
     }
 
     private CompletableFuture<String> stopThreadFail(SoHSchedule soHSchedule){
         soHSchedule.setState(DischargeState.FAILED);
-        soHSchedule.setFinishDatetime(LocalDateTime.now());
+        soHSchedule.setEndDatetime(LocalDateTime.now());
         soHScheduleRepository.save(soHSchedule);
         return CompletableFuture.completedFuture("Task completed failed");
     }
