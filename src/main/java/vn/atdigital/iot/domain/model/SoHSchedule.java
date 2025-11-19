@@ -5,7 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import vn.atdigital.iot.common.enums.StatusEnums;
+import vn.atdigital.iot.common.enums.DischargeState;
+import vn.atdigital.iot.common.enums.Status;
 
 import java.time.LocalDateTime;
 
@@ -20,16 +21,27 @@ public class SoHSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "string_id")
-    private String stringId;
+    @Column(name = "str_id")
+    private String strId;
 
+    @Column(name = "soh")
     private Double soh;
+
+    @Column(name = "current")
+    private Double current;
+
+    @Column(name = "state")
+    private DischargeState state;
+
+    @Column(name = "status")
+    private Status status;
 
     @Column(name = "start_datetime")
     private LocalDateTime startDatetime;
 
-    @Column(name = "finish_datetime")
-    private LocalDateTime finishDatetime;
+    @Column(name = "update_datetime")
+    private LocalDateTime updateDatetime;
 
-    private StatusEnums status;
+    @Column(name = "end_datetime")
+    private LocalDateTime endDatetime;
 }
