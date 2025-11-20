@@ -18,15 +18,16 @@ public class EntityRepositoryCustomImpl implements EntityRepositoryCustom {
     @Override
     public Double getCurrentValue(String strId) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT VALUE AS value\n")
+        sb.append("SELECT ti.\"VALUE\" AS value\n")
                 .append("FROM ").append(strId).append("_total_i ti\n")
-                .append("WHERE 1=1")
-                .append("ORDER BY time DESC")
+                .append("WHERE 1=1\n")
+                .append("ORDER BY time DESC\n")
                 .append("LIMIT 1");
         Query query = em.createNativeQuery(sb.toString());
-        List<String> result = query.getResultList();
+        List<Integer> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)) {
-            return Double.parseDouble(result.getFirst())/100;
+            double value = result.getFirst();
+            return value/100;
         }
         return 0D;
     }
@@ -34,15 +35,16 @@ public class EntityRepositoryCustomImpl implements EntityRepositoryCustom {
     @Override
     public Double getTemperatureValue(String strId) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT VALUE AS value\n")
+        sb.append("SELECT at.\"VALUE\" AS value\n")
                 .append("FROM ").append(strId).append("_ambient_t at\n")
-                .append("WHERE 1=1")
-                .append("ORDER BY time DESC")
+                .append("WHERE 1=1\n")
+                .append("ORDER BY time DESC\n")
                 .append("LIMIT 1");
         Query query = em.createNativeQuery(sb.toString());
-        List<String> result = query.getResultList();
+        List<Integer> result = query.getResultList();
         if (!CollectionUtils.isEmpty(result)) {
-            return Double.parseDouble(result.getFirst())/100;
+            double value = result.getFirst();
+            return value/100;
         }
         return 0D;
     }

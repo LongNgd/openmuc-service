@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SoHService {
-    void createSchedule(String strId, LocalDateTime startTime);
+    void createSchedule(String strId, LocalDateTime startTime,Double current);
     void updateSchedule(Long id, LocalDateTime startTime);
     void stopSchedule(Long id);
     void removeSchedule(Long id);

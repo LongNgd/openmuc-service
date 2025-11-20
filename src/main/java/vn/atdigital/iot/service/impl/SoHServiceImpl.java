@@ -23,12 +23,14 @@ public class SoHServiceImpl implements SoHService {
     private final SoHScheduleRepository soHScheduleRepository;
 
     @Override
-    public void createSchedule(String strId, LocalDateTime startDate) {
+    public void createSchedule(String strId, LocalDateTime startDate,Double current) {
         boolean alreadyExist = checkAvailableSchedule(strId);
         if(alreadyExist) throw new RuntimeException("SoH schedule already exists.");
 
         SoHSchedule soHSchedule = SoHSchedule.builder()
                 .strId(strId)
+                .current(current)
+                .soh(0D)
                 .startDatetime(startDate)
                 .state(PENDING)
                 .status(ACTIVE)

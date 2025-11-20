@@ -2,7 +2,7 @@ package vn.atdigital.iot.common;
 
 public interface Constants {
     final class ASYNC_PARAMS {
-        public static final int INTERVAL = 1;
+        public static final int INTERVAL = 5;
     }
     public static class API_RESPONSE {
         private API_RESPONSE() {

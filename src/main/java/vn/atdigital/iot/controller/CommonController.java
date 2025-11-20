@@ -12,7 +12,7 @@ public abstract class CommonController {
 
         message.setCode(Constants.API_RESPONSE.RETURN_CODE_SUCCESS);
         message.setSuccess(Constants.STATUS_COMMON.RESPONSE_STATUS_TRUE);
-        message.setData(data );
+        message.setData(data);
 
         return new ResponseEntity<>(message, HttpStatus.OK);
     }

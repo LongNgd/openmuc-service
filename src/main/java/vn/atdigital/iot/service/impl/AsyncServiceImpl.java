@@ -1,6 +1,7 @@
 package vn.atdigital.iot.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import vn.atdigital.iot.common.enums.DischargeState;
@@ -19,10 +20,10 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static vn.atdigital.iot.common.Constants.ASYNC_PARAMS.INTERVAL;
-import static vn.atdigital.iot.common.enums.DischargeState.PENDING;
-import static vn.atdigital.iot.common.enums.DischargeState.RUNNING;
+import static vn.atdigital.iot.common.enums.DischargeState.*;
 import static vn.atdigital.iot.common.enums.Status.ACTIVE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AsyncServiceImpl implements AsyncService {
@@ -34,25 +35,23 @@ public class AsyncServiceImpl implements AsyncService {
     public void calculateSoh(Long id, String strId) {
         try {
             while(Thread.currentThread().isAlive()) {
-                Optional<SoHSchedule> scheduleOptional = soHScheduleRepository.findByIdAndStateInAndStatus(id, Arrays.asList(PENDING, RUNNING),ACTIVE);
+                Optional<SoHSchedule> scheduleOptional = soHScheduleRepository.findByIdAndStateInAndStatus(id, Arrays.asList(RUNNING,STOPPED),ACTIVE);
                 if (scheduleOptional.isEmpty())
                     Thread.currentThread().interrupt();
 
                 SoHSchedule soHSchedule = scheduleOptional.get();
-                if (soHSchedule.getState().equals(DischargeState.STOPPED)) {
+                if (soHSchedule.getState().equals(STOPPED)) {
                     stopThreadSuccess(soHSchedule);
                     return;
                 }
                 Optional<LatestValue> cNominalValueOpt = latestValueRepository.findLatestValueByChannelId(strId + "_Cnominal");
                 if (cNominalValueOpt.isEmpty()) {
                     stopThreadFail(soHSchedule);
-                    return;
                 }
 
                 LatestValue cNominalValue = cNominalValueOpt.get();
                 if (Objects.isNull(cNominalValue.getValueDouble())) {
                     stopThreadFail(soHSchedule);
-                    return;
                 }
 
                 double cNominalAh = cNominalValue.getValueDouble(); // Ah
@@ -61,16 +60,17 @@ public class AsyncServiceImpl implements AsyncService {
                 double current = entityRepository.getCurrentValue(strId);
                 double temperature = entityRepository.getTemperatureValue(strId);
                 usedQ += current * INTERVAL * TemperatureFactor.getFactor(temperature);
-                usedQ = usedQ / cNominalAs;
+                usedQ = usedQ / cNominalAs * 100;
 
                 soHSchedule.setSoh(usedQ);
                 soHSchedule.setUpdateDatetime(LocalDateTime.now());
                 soHScheduleRepository.save(soHSchedule);
 
                 // Simulate a long-running task
-                Thread.sleep(1000);
+                Thread.sleep(INTERVAL*1000);
             }
         } catch (Exception e) {
+            log.error(e.getMessage(),e);
             Thread.currentThread().interrupt();
         }
         CompletableFuture.completedFuture("Task completed");
@@ -80,6 +80,7 @@ public class AsyncServiceImpl implements AsyncService {
         soHSchedule.setState(DischargeState.SUCCESS);
         soHSchedule.setEndDatetime(LocalDateTime.now());
         soHScheduleRepository.save(soHSchedule);
+        Thread.currentThread().interrupt();
         return CompletableFuture.completedFuture("Task completed successfully");
     }
 
@@ -87,6 +88,7 @@ public class AsyncServiceImpl implements AsyncService {
         soHSchedule.setState(DischargeState.FAILED);
         soHSchedule.setEndDatetime(LocalDateTime.now());
         soHScheduleRepository.save(soHSchedule);
+        Thread.currentThread().interrupt();
         return CompletableFuture.completedFuture("Task completed failed");
     }
 }
