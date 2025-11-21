@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface LatestValueRepository extends JpaRepository<LatestValue,String> {
     Optional<LatestValue> findLatestValueByChannelId(String channelId);
     List<LatestValue> findByChannelIdStartingWith(String prefix);
+    void deleteAllByChannelIdStartingWith(String prefix);
 }

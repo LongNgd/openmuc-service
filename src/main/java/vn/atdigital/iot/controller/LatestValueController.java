@@ -3,10 +3,7 @@ package vn.atdigital.iot.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.atdigital.iot.common.Constants;
 import vn.atdigital.iot.domain.dto.StringDetailDTO;
 import vn.atdigital.iot.service.LatestValueService;
@@ -45,6 +42,16 @@ public class LatestValueController extends CommonController {
         try {
             StringDetailDTO stringDetailDTO = latestValueService.getStringDetails(stringId);
             return toSuccessResult(stringDetailDTO);
+        } catch (Exception e) {
+            return toExceptionResult(e.getMessage(), Constants.API_RESPONSE.RETURN_CODE_ERROR);
+        }
+    }
+
+    @PostMapping("/delete-string")
+    public ResponseEntity<?> deleteStringValues(@RequestParam String stringId) {
+        try {
+            latestValueService.deleteString(stringId);
+            return toSuccessResultNull();
         } catch (Exception e) {
             return toExceptionResult(e.getMessage(), Constants.API_RESPONSE.RETURN_CODE_ERROR);
         }

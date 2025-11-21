@@ -52,6 +52,15 @@ public class LatestValueServiceImpl implements LatestValueService {
                 .build();
     }
 
+    @Override
+    public void deleteString(String stringId) {
+        String prefixKey = "str" + stringId;
+        List<LatestValue> stringValues = latestValueRepository.findByChannelIdStartingWith("str"+stringId);
+        Assert.isTrue(!stringValues.isEmpty(), "String not found.");
+
+        latestValueRepository.deleteAllByChannelIdStartingWith(prefixKey);
+    }
+
     private Map<String,String> parseValues(List<LatestValue> values) {
         Map<String,String> valuesMap = new TreeMap<>();
 

@@ -8,4 +8,5 @@ public interface LatestValueService {
     Map<String, String> getDevValues();
     String getSiteName();
     StringDetailDTO getStringDetails(String stringId);
+    void deleteString(String stringId);
 }
