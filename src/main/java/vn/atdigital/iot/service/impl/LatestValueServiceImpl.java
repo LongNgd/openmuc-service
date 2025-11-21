@@ -1,5 +1,6 @@
 package vn.atdigital.iot.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -53,9 +54,10 @@ public class LatestValueServiceImpl implements LatestValueService {
     }
 
     @Override
+    @Transactional
     public void deleteString(String stringId) {
         String prefixKey = "str" + stringId;
-        List<LatestValue> stringValues = latestValueRepository.findByChannelIdStartingWith("str"+stringId);
+        List<LatestValue> stringValues = latestValueRepository.findByChannelIdStartingWith(prefixKey);
         Assert.isTrue(!stringValues.isEmpty(), "String not found.");
 
         latestValueRepository.deleteAllByChannelIdStartingWith(prefixKey);
