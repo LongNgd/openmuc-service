@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.atdigital.iot.common.Constants;
+import vn.atdigital.iot.domain.dto.Account;
 import vn.atdigital.iot.domain.dto.StringDetailDTO;
 import vn.atdigital.iot.service.LatestValueService;
 
@@ -42,6 +43,15 @@ public class LatestValueController extends CommonController {
         try {
             StringDetailDTO stringDetailDTO = latestValueService.getStringDetails(stringId);
             return toSuccessResult(stringDetailDTO);
+        } catch (Exception e) {
+            return toExceptionResult(e.getMessage(), Constants.API_RESPONSE.RETURN_CODE_ERROR);
+        }
+    }
+    @GetMapping("/account")
+    public ResponseEntity<?> getAccountValues(@RequestParam int accountID) {
+        try {
+            Account accountDetails = latestValueService.getAccountDetails(accountID);
+            return toSuccessResult(accountDetails);
         } catch (Exception e) {
             return toExceptionResult(e.getMessage(), Constants.API_RESPONSE.RETURN_CODE_ERROR);
         }

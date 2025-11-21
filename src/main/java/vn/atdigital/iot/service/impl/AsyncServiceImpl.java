@@ -61,6 +61,7 @@ public class AsyncServiceImpl implements AsyncService {
                 double temperature = entityRepository.getTemperatureValue(strId);
                 usedQ += current * INTERVAL * TemperatureFactor.getFactor(temperature);
                 usedQ = usedQ / cNominalAs * 100;
+                // usedQ = usedQ / (cNominalAs * SoC) * 100;
 
                 soHSchedule.setSoh(usedQ);
                 soHSchedule.setUpdateDatetime(LocalDateTime.now());

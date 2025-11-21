@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import vn.atdigital.iot.domain.dto.Account;
 import vn.atdigital.iot.domain.dto.StringDetailDTO;
 import vn.atdigital.iot.domain.model.LatestValue;
 import vn.atdigital.iot.repository.LatestValueRepository;
@@ -52,6 +53,19 @@ public class LatestValueServiceImpl implements LatestValueService {
                 .vNominal(Double.valueOf(stringValueMap.get(prefixKey + "_Vnominal")))
                 .build();
     }
+    @Override
+    public Account getAccountDetails(int accountID) {
+        List<LatestValue> stringValues = latestValueRepository.findByChannelIdStartingWith("account_"+ accountID);
+
+        Map<String, String> stringValueMap = parseValues(stringValues);
+        Assert.isTrue(!stringValueMap.isEmpty(), "String values not found.");
+
+        return Account.builder()
+                .username(stringValueMap.get("account_"+ accountID + "_username"))
+                .password(stringValueMap.get("account_"+accountID + "_password"))
+                .build();
+    }
+
 
     @Override
     @Transactional
