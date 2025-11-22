@@ -33,6 +33,22 @@ public class EntityRepositoryCustomImpl implements EntityRepositoryCustom {
     }
 
     @Override
+    public Double getSocValue(String strId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT ss.\"VALUE\" AS value\n")
+                .append("FROM ").append(strId).append("_string_soc ss\n")
+                .append("WHERE 1=1\n")
+                .append("ORDER BY time DESC\n")
+                .append("LIMIT 1");
+        Query query = em.createNativeQuery(sb.toString());
+        List<Double> result = query.getResultList();
+        if (!CollectionUtils.isEmpty(result)) {
+            return result.getFirst();
+        }
+        return 0D;
+    }
+
+    @Override
     public Double getTemperatureValue(String strId) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT at.\"VALUE\" AS value\n")

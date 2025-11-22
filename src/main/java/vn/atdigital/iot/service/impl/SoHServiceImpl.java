@@ -30,7 +30,7 @@ public class SoHServiceImpl implements SoHService {
         SoHSchedule soHSchedule = SoHSchedule.builder()
                 .strId(strId)
                 .current(current)
-                .soh(0D)
+                .usedQ(0D)
                 .startDatetime(startDate)
                 .state(PENDING)
                 .status(ACTIVE)

@@ -54,16 +54,26 @@ public class AsyncServiceImpl implements AsyncService {
                     stopThreadFail(soHSchedule);
                 }
 
+                Double socValueAfter = entityRepository.getSocValue(soHSchedule.getStrId());
+                if(Objects.isNull(socValueAfter))
+                    socValueAfter = 0D;
+
                 double cNominalAh = cNominalValue.getValueDouble(); // Ah
                 double cNominalAs = cNominalAh * 3600;
-                double usedQ = soHSchedule.getSoh();
+                double usedQ = soHSchedule.getUsedQ();
                 double current = entityRepository.getCurrentValue(strId);
                 double temperature = entityRepository.getTemperatureValue(strId);
                 usedQ += current * INTERVAL * TemperatureFactor.getFactor(temperature);
-                usedQ = usedQ / cNominalAs * 100;
-                // usedQ = usedQ / (cNominalAs * SoC) * 100;
-
-                soHSchedule.setSoh(usedQ);
+                double soh;
+                if(soHSchedule.getSocBefore()-socValueAfter == 0){
+                    soh = 100d;
+                }else{
+                    soh = Math.abs(usedQ / (soHSchedule.getSocBefore()-socValueAfter) / cNominalAs * 10000);
+                }
+                if(soh>100) soh = 100d;
+                soHSchedule.setSoh(soh);
+                soHSchedule.setSocAfter(socValueAfter);
+                soHSchedule.setUsedQ(usedQ);
                 soHSchedule.setUpdateDatetime(LocalDateTime.now());
                 soHScheduleRepository.save(soHSchedule);
 

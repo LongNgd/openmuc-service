@@ -24,11 +24,20 @@ public class SoHSchedule {
     @Column(name = "str_id")
     private String strId;
 
+    @Column(name = "used_q")
+    private Double usedQ;
+
     @Column(name = "soh")
     private Double soh;
 
     @Column(name = "current")
     private Double current;
+
+    @Column(name = "soc_before")
+    private Double socBefore;
+
+    @Column(name = "soc_after")
+    private Double socAfter;
 
     @Column(name = "state")
     private DischargeState state;
